@@ -8,15 +8,16 @@ var WIX_BINARY_URL = 'http://static.wixtoolset.org/releases/v3.9.1006.0/wix39-bi
 
 var zipPath = path.resolve(os.tmpdir(), 'wix.zip');
 var file = fs.createWriteStream(zipPath);
-var request = http.get(WIX_BINARY_URL, function(response) {
-	response.pipe(file);
-	console.log('Downloading WIX Binaries');
-	response.on('data', function() {
-		process.stdout.write(".");
-	});
-	response.on('end', function() {
-		console.log('Extracting');
-		fs.createReadStream(zipPath).pipe(unzip.Extract({path: path.resolve(__dirname, 'wix-bin')}));
-	})
+var request = http.get(WIX_BINARY_URL, function (response) {
+  response.pipe(file);
+  console.log('Downloading WIX Binaries');
+  response.on('data', function () {
+    process.stdout.write(".");
+  });
+  response.on('end', function () {
+    console.log('Extracting');
+    fs.createReadStream(zipPath).pipe(unzip.Extract({
+      path: path.resolve(__dirname, 'wix-bin')
+    }));
+  })
 });
-

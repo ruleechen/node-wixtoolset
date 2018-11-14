@@ -13,9 +13,8 @@
   "dependencies": {
     "unzip": "^0.1.11"
   },
-  "repository" :
-  { "type" : "git"
-  , "url" : "https://github.com/rewiredpictures/node-wixtoolset.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rewiredpictures/node-wixtoolset.git"
   }
-
 }
