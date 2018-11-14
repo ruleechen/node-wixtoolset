@@ -1,4 +1,5 @@
 var http = require('http');
+var https = require('https');
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
@@ -8,7 +9,8 @@ var WIX_BINARY_URL = 'https://github.com/wixtoolset/wix3/releases/download/wix31
 
 var zipPath = path.resolve(os.tmpdir(), 'wix.zip');
 var file = fs.createWriteStream(zipPath);
-var request = http.get(WIX_BINARY_URL, function (response) {
+var tool = (WIX_BINARY_URL.indexOf('https://') ? https : http);
+var request = tool.get(WIX_BINARY_URL, function (response) {
   response.pipe(file);
   console.log('Downloading WIX Binaries');
   response.on('data', function () {
