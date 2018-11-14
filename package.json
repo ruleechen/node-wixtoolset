@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "download": "^7.1.0",
     "unzip": "^0.1.11"
   },
   "repository": {
