@@ -5,7 +5,7 @@ function wixBinWrapper(exe, requiredArgs) {
   return function (/* arguments */) {
     var args = [], opts = {};
     for (var i = 0; i < arguments.length; i++) {
-      if (typeof arguments[i] === 'string') {
+      if (typeof arguments[i] === 'string' || typeof arguments[i] === 'number') {
         args.push(arguments[i]);
       } else if (typeof arguments[i] === 'object' && i === arguments.length - 1) {
         opts = arguments[i];
@@ -15,26 +15,60 @@ function wixBinWrapper(exe, requiredArgs) {
     }
 
     return new Promise(function (resolve, reject) {
-      var cmd = path.resolve(__dirname, 'wix-bin', exe);
+      var cmd = path.resolve(__dirname, 'wix-bin', exe),
+        optArgs = createArgsFromOptions(opts);
 
-      for (var key in opts) {
-        args.unshift('-' + key + ' ' + opts[key]);
+      if (optArgs.length) {
+        args = optArgs.concat(args);
       }
 
-      if (process.platform != "win32") {
+      if (process.platform !== "win32") {
         args.unshift(cmd);
         cmd = 'wine';
       }
 
-      var child = child_process.spawn(cmd, args);
-      child.on('error', function (err) {
+      var child = child_process.spawn(cmd, args),
+        stdout = "", stderr = "";
+
+      child.stdout.on("data", data => { stdout += String(data); });
+      child.stderr.on("data", data => { stderr += String(data); });
+
+      child.on('error', reject);
+      child.on('close', function (code) {
+        if (code === 0) {
+          return resolve({ stdout: stdout, stderr: stderr });
+        }
+
+        var err = new Error('WIX ' + exe + ' exited with code ' + code + (stderr ? "\n" + stderr : ""));
+        err.command = cmd;
+        err.args = args;
+        err.code = code;
+        err.stdout = stdout;
+        err.stderr = stderr;
+
         reject(err);
       });
-
-      child.on('close', function () {
-        resolve();
-      });
     });
+  }
+}
+
+function createArgsFromOptions(opts) {
+  var args = [];
+
+  for (var key in opts) {
+    addToArgs(args, key, opts[key]);
+  }
+
+  return args;
+}
+
+function addToArgs(args, key, val) {
+  if (typeof val === 'string' || typeof val === 'number') {
+    args.push('-' + key, opts[key]);
+  } else if (typeof val === 'boolean' && val) {
+    args.push('-' + key);
+  } else if (Array.isArray(val)) {
+    val.forEach(function (v) { addToArgs(args, key, v); });
   }
 }
 
@@ -52,5 +86,5 @@ module.exports = {
   retina: wixBinWrapper('retina.exe'),
   shine: wixBinWrapper('shine.exe'),
   smoke: wixBinWrapper('smoke.exe'),
-  torch: wixBinWrapper('torch.exe'),
+  torch: wixBinWrapper('torch.exe')
 };
