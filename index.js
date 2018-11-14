@@ -66,6 +66,8 @@ function addToArgs(args, key, val) {
   if (typeof val === 'string' || typeof val === 'number') {
     if (key.substr(0, 1) === 'd') {  // -d<name>[=<value>]  define a parameter for the preprocessor
       args.push('-' + key + '=' + val);
+    } else if (key === 'cultures') {
+      args.push('-' + key + ':' + val);
     } else {
       args.push('-' + key, val);
     }
