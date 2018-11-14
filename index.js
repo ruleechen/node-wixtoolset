@@ -69,7 +69,8 @@ function addToArgs(args, key, val) {
     } else if (key === 'cultures') {
       args.push('-' + key + ':' + val);
     } else {
-      args.push('-' + key, val);
+      args.push('-' + key);
+      if (val || val === 0) { args.push(val); }
     }
   } else if (typeof val === 'boolean' && val) {
     args.push('-' + key);
