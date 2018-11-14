@@ -64,7 +64,11 @@ function createArgsFromOptions(opts) {
 
 function addToArgs(args, key, val) {
   if (typeof val === 'string' || typeof val === 'number') {
-    args.push('-' + key, opts[key]);
+    if (key.substr(0, 1) === 'd') {  // -d<name>[=<value>]  define a parameter for the preprocessor
+      args.push('-' + key + '=' + val);
+    } else {
+      args.push('-' + key, val);
+    }
   } else if (typeof val === 'boolean' && val) {
     args.push('-' + key);
   } else if (Array.isArray(val)) {
@@ -86,5 +90,5 @@ module.exports = {
   retina: wixBinWrapper('retina.exe'),
   shine: wixBinWrapper('shine.exe'),
   smoke: wixBinWrapper('smoke.exe'),
-  torch: wixBinWrapper('torch.exe')
+  torch: wixBinWrapper('torch.exe'),
 };
