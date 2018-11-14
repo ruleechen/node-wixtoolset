@@ -9,7 +9,7 @@ var WIX_BINARY_URL = 'https://github.com/wixtoolset/wix3/releases/download/wix31
 
 var zipPath = path.resolve(os.tmpdir(), 'wix.zip');
 var file = fs.createWriteStream(zipPath);
-var tool = (WIX_BINARY_URL.indexOf('https://') ? https : http);
+var tool = (WIX_BINARY_URL.indexOf('https://') === 0 ? https : http);
 var request = tool.get(WIX_BINARY_URL, function (response) {
   response.pipe(file);
   console.log('Downloading WIX Binaries');
