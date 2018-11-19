@@ -16,7 +16,7 @@ function wixBinWrapper(exe, requiredArgs) {
 
     return new Promise(function (resolve, reject) {
       var cmd = path.resolve(__dirname, 'wix-bin', exe),
-        optArgs = createArgsFromOptions(opts);
+        optArgs = createArgsFromOptions(opts, exe);
 
       if (optArgs.length) {
         args = optArgs.concat(args);
@@ -52,22 +52,29 @@ function wixBinWrapper(exe, requiredArgs) {
   }
 }
 
-function createArgsFromOptions(opts) {
+function createArgsFromOptions(opts, exe) {
   var args = [];
 
   for (var key in opts) {
-    addToArgs(args, key, opts[key]);
+    addToArgs(exe, args, key, opts[key]);
   }
 
   return args;
 }
 
-function addToArgs(args, key, val) {
+var actionTypes = {
+  'heat.exe': 'dir,file,project,website,perf,reg', // harvesting types
+};
+
+function addToArgs(exe, args, key, val) {
   if (typeof val === 'string' || typeof val === 'number') {
-    if (key.substr(0, 1) === 'd') {  // -d<name>[=<value>]  define a parameter for the preprocessor
-      args.push('-' + key + '=' + val);
-    } else if (key === 'cultures') {
+    if (key === 'cultures') {
       args.push('-' + key + ':' + val);
+    } else if (exe in actionTypes && actionTypes[exe].indexOf(key) !== -1) {
+      args.push(key);
+      if (val || val === 0) { args.push(val); }
+    } else if (key.substr(0, 1) === 'd') {  // -d<name>[=<value>]  define a parameter for the preprocessor
+      args.push('-' + key + '=' + val);
     } else {
       args.push('-' + key);
       if (val || val === 0) { args.push(val); }
@@ -75,7 +82,7 @@ function addToArgs(args, key, val) {
   } else if (typeof val === 'boolean' && val) {
     args.push('-' + key);
   } else if (Array.isArray(val)) {
-    val.forEach(function (v) { addToArgs(args, key, v); });
+    val.forEach(function (v) { addToArgs(exe, args, key, v); });
   }
 }
 
