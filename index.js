@@ -10,7 +10,7 @@ function wixBinWrapper(exe, requiredArgs) {
       } else if (typeof arguments[i] === 'object' && i === arguments.length - 1) {
         opts = arguments[i];
       } else {
-        throw new Error("Wrong arguments for this command");
+        throw new Error('Wrong arguments for this command');
       }
     }
 
@@ -22,16 +22,16 @@ function wixBinWrapper(exe, requiredArgs) {
         args = optArgs.concat(args);
       }
 
-      if (process.platform !== "win32") {
+      if (process.platform !== 'win32') {
         args.unshift(cmd);
         cmd = 'wine';
       }
 
       var child = child_process.spawn(cmd, args),
-        stdout = "", stderr = "";
+        stdout = '', stderr = '';
 
-      child.stdout.on("data", data => { stdout += String(data); });
-      child.stderr.on("data", data => { stderr += String(data); });
+      child.stdout.on('data', data => { stdout += String(data); console.log(String(data)); });
+      child.stderr.on('data', data => { stderr += String(data); });
 
       child.on('error', reject);
       child.on('close', function (code) {
@@ -39,7 +39,7 @@ function wixBinWrapper(exe, requiredArgs) {
           return resolve({ stdout: stdout, stderr: stderr });
         }
 
-        var err = new Error('WIX ' + exe + ' exited with code ' + code + (stderr ? "\n" + stderr : ""));
+        var err = new Error('WIX ' + exe + ' exited with code ' + code + (stderr ? '\n' + stderr : ''));
         err.command = cmd;
         err.args = args;
         err.code = code;
@@ -63,18 +63,18 @@ function createArgsFromOptions(opts, exe) {
 }
 
 var actionTypes = {
-  'heat.exe': 'dir,file,project,website,perf,reg', // harvesting types
+  'heat.exe': 'dir,file,project,website,perf,reg'.split(','), // harvesting types
 };
 
 function addToArgs(exe, args, key, val) {
   if (typeof val === 'string' || typeof val === 'number') {
     if (key === 'cultures') {
       args.push('-' + key + ':' + val);
-    } else if (exe in actionTypes && actionTypes[exe].indexOf(key) !== -1) {
+    } else if (exe in actionTypes && actionTypes[exe].includes(key)) {
       args.push(key);
       if (val || val === 0) { args.push(val); }
-    } else if (key.substr(0, 1) === 'd') {  // -d<name>[=<value>]  define a parameter for the preprocessor
-      args.push('-' + key + '=' + val);
+    } else if (key.substr(0, 2) === 'd_') {  // -d<name>[=<value>]  define a parameter for the preprocessor
+      args.push('-' + key.replace('_', '') + '=' + val);
     } else {
       args.push('-' + key);
       if (val || val === 0) { args.push(val); }
