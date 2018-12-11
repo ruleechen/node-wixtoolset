@@ -1,5 +1,6 @@
 var path = require('path');
 var child_process = require('child_process');
+var packager = require('./packager');
 
 function wixBinWrapper(exe, requiredArgs) {
   return function (/* arguments */) {
@@ -101,4 +102,5 @@ module.exports = {
   shine: wixBinWrapper('shine.exe'),
   smoke: wixBinWrapper('smoke.exe'),
   torch: wixBinWrapper('torch.exe'),
+  packager: packager.default,
 };

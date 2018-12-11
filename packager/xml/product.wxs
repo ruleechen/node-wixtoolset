@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?if $(var.BuildArch)=x86 ?>
+    <?define isWin64="no" ?>
+  <?else?>
+    <?define isWin64="yes" ?>
+  <?endif?>
+
+  <Product Id="*" Name="$(var.AppName)" Language="1033" Version="$(var.Version)" Manufacturer="$(var.Publisher)" UpgradeCode="{$(var.AppGuid)}">
+    <Package Languages="1033" InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Description="$(var.AppName)-$(var.BuildArch)" />
+    <Icon Id="app.ico" SourceFile="$(var.AppIcon)" />
+    <Property Id="ARPPRODUCTICON" Value="app.ico" />
+
+    <Property Id="locAppName" Value="$(var.AppName)" />
+    <Property Id="IsWin64" Value="$(var.isWin64)" />
+
+    <MajorUpgrade
+      AllowDowngrades="no"
+      AllowSameVersionUpgrades="yes"
+      Schedule="afterInstallValidate"
+      DowngradeErrorMessage="!(loc.DowngradeErrorMessage)"
+    />
+
+    <UIRef Id="WixUI_InstallDir" />
+    <MediaTemplate EmbedCab="yes" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.EulaFile)"></WixVariable>
+
+    <?if $(var.isWin64)=no ?>
+      <?define mProgramFilesFolder="ProgramFilesFolder" ?>
+    <?else?>
+      <?define mProgramFilesFolder="ProgramFiles64Folder" ?>
+    <?endif?>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="$(var.mProgramFilesFolder)">
+        <Directory Id="$(var.InstallDirId)" Name="$(var.InstallDirName)">
+        </Directory>
+      </Directory>
+    </Directory>
+    <Property Id="WIXUI_INSTALLDIR" Value="$(var.InstallDirId)" />
+
+    <Feature Id="MainApplication" Title="$(var.AppName)" Level="1">
+      <ComponentGroupRef Id="$(var.FilesGroupId)" />
+    </Feature>
+
+  </Product>
+</Wix>
