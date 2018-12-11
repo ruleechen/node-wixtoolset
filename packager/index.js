@@ -4,7 +4,7 @@
 */
 
 import path from 'path';
-import wix from './index';
+import wix from '../index';
 import signing from './signing';
 
 async function pack({
