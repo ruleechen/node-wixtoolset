@@ -66,6 +66,7 @@ async function pack({
   };
 
   // heat
+  console.log('==================== wix.heat ====================');
   await wix.heat({
     dir: appPath, // harvest a directory
     gg: true, // generate guids now
@@ -81,6 +82,7 @@ async function pack({
   });
 
   // candle
+  console.log('==================== wix.candle ====================');
   await Promise.all([
     wix.candle(productWxs, {
       ...variables,
@@ -97,6 +99,7 @@ async function pack({
   ]);
 
   // lit
+  console.log('==================== wix.lit ====================');
   await wix.lit({
     ...outputOptions,
     bf: [productWixObj, filesWixObj], // bind files into the library file
@@ -104,6 +107,7 @@ async function pack({
   });
 
   // light
+  console.log('==================== wix.light ====================');
   await wix.light(wixLib, {
     // ...variables,
     ...outputOptions,
@@ -115,6 +119,7 @@ async function pack({
 
   // sign
   if (certificateFile) {
+    console.log('==================== sign ====================');
     await signing.sign({
       executable: artifactFilePath,
       certificateFile,
