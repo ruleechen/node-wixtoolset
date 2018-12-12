@@ -3,9 +3,9 @@
 * WiX (Windows Installer XML)
 */
 
-import path from 'path';
-import wix from '../index';
-import signing from './signing';
+const path = require('path');
+const wix = require('../index');
+const signing = require('./signing');
 
 async function pack({
   appPath,
@@ -48,6 +48,7 @@ async function pack({
   // define a wix variable, with or without a value.
   const mergedVariables = {
     ...wixVariables,
+    AppPath: appPath,
     FilesGroupId: filesGroupId,
     InstallDirId: installDirId,
     BuildEnv: env,
@@ -124,6 +125,6 @@ async function pack({
   }
 }
 
-export default {
+module.exports = {
   pack,
 };

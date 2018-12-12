@@ -2,7 +2,7 @@
 * https://github.com/spatools/node-signtool
 */
 
-import signtool from 'signtool';
+const signtool = require('signtool');
 
 const runOptions = {
   // verbose: true,
@@ -31,6 +31,6 @@ function sign({
   });
 }
 
-export default {
+module.exports = {
   sign,
 };
