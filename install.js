@@ -3,7 +3,10 @@ var path = require('path');
 var download = require('download');
 
 var WIX_BINARY_URL = 'https://github.com/wixtoolset/wix3/releases/download/wix3111rtm/wix311-binaries.zip';
-var WIX_BINARY_DEST = path.resolve(process.env.LOCALAPPDATA, 'wixtoolset', 'bin');
+var WIX_BINARY_DEST = path.resolve(__dirname, 'wix-bin');
+if (process.env.LOCALAPPDATA) {
+  WIX_BINARY_DEST = path.resolve(process.env.LOCALAPPDATA, 'wixtoolset', 'bin');
+}
 
 function install() {
   var versionPath = path.resolve(WIX_BINARY_DEST, 'version.txt');
