@@ -25,7 +25,7 @@ function install() {
     console.log('Start downloading wix binaries...');
     download(WIX_BINARY_URL, WIX_BINARY_DEST, { extract: true }).then(() => {
       fs.writeFileSync(versionPath, WIX_BINARY_URL, { encoding: 'utf8' });
-      console.log('Download wix binaries completed');
+      console.log('Download wix binaries completed', res);
       resolve(res);
     }).catch((ex) => {
       console.error(`Download wix binaries failed ${ex}`);
