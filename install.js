@@ -9,25 +9,28 @@ if (process.env.LOCALAPPDATA) {
 }
 
 function install() {
-  var versionPath = path.resolve(WIX_BINARY_DEST, 'version.txt');
   var res = {
     url: WIX_BINARY_URL,
     dest: WIX_BINARY_DEST,
   };
-  if (fs.existsSync(versionPath)) {
-    var url = fs.readFileSync(versionPath, 'utf8');
-    if (url === WIX_BINARY_URL) {
-      return Promise.resolve(res);
+  return new Promise((resolve, reject) => {
+    var versionPath = path.resolve(WIX_BINARY_DEST, 'version.txt');
+    if (fs.existsSync(versionPath)) {
+      var url = fs.readFileSync(versionPath, 'utf8');
+      if (url === WIX_BINARY_URL) {
+        resolve(res);
+        return;
+      }
     }
-  }
-
-  console.log('Start downloading wix binaries...');
-  return download(WIX_BINARY_URL, WIX_BINARY_DEST, { extract: true }).then(() => {
-    fs.writeFileSync(versionPath, WIX_BINARY_URL, { encoding: 'utf8' });
-    console.log('Download wix binaries completed');
-    return res;
-  }).catch((ex) => {
-    console.error(`Download wix binaries failed ${ex}`);
+    console.log('Start downloading wix binaries...');
+    download(WIX_BINARY_URL, WIX_BINARY_DEST, { extract: true }).then(() => {
+      fs.writeFileSync(versionPath, WIX_BINARY_URL, { encoding: 'utf8' });
+      console.log('Download wix binaries completed');
+      resolve(res);
+    }).catch((ex) => {
+      console.error(`Download wix binaries failed ${ex}`);
+      reject(ex);
+    });
   });
 };
 
