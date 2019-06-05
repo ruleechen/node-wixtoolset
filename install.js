@@ -6,7 +6,9 @@ var download = require('download');
 var WIX_BINARY_URL = 'https://github.com/wixtoolset/wix3/releases/download/wix3111rtm/wix311-binaries.zip';
 var WIX_BINARY_DEST = path.resolve(__dirname, 'wix-bin');
 var USER_NAME = os.userInfo().username;
-if (process.env.LOCALAPPDATA && USER_NAME !== 'systemprofile') {
+// can not execute under system user profile
+// C:\Windows\System32\config\systemprofile\AppData\Local\wixtoolset\bin
+if (process.env.LOCALAPPDATA && USER_NAME !== 'SYSTEM') {
   WIX_BINARY_DEST = path.resolve(process.env.LOCALAPPDATA, 'wixtoolset', 'bin');
 }
 
