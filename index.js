@@ -72,7 +72,7 @@ var actionTypes = {
 
 function addToArgs(exe, args, key, val) {
   if (typeof val === 'string' || typeof val === 'number') {
-    if (key === 'cultures') {
+    if (key === 'cultures' || key === 'ice' || key == 'sice') {
       args.push('-' + key + ':' + val);
     } else if (exe in actionTypes && actionTypes[exe].includes(key)) {
       args.push(key);
