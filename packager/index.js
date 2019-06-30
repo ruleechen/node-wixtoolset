@@ -25,6 +25,7 @@ async function pack({
   i18nWxl = path.resolve(__dirname, './xml/en-us.wxl'),
   i18nCulture = 'en-us',
   suppressIces,
+  extensions,
   sign: {
     certificateFile,
     certificatePassword,
@@ -115,7 +116,7 @@ async function pack({
     loc: i18nWxl, // bind localization strings from a wxl into the library file
     sice: suppressIces, // Suppress running internal consistency evaluators (ICEs) with specific IDs.
     cultures: i18nCulture, // semicolon or comma delimited list of localized string cultures to load from .wxl files and libraries.
-    ext: 'WixUIExtension', // extension assembly or "class, assembly"
+    ext: ['WixUIExtension', ...(extensions || [])], // extension assembly or "class, assembly"
     out: artifactFilePath, // specify output file (default: write to current directory)
   });
 
