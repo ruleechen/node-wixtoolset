@@ -3,7 +3,7 @@ var os = require("os");
 var path = require('path');
 var download = require('download');
 
-var WIX_BINARY_URL = 'https://github.com/wixtoolset/wix3/releases/download/wix3111rtm/wix311-binaries.zip';
+var WIX_BINARY_URL = 'https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip';
 var WIX_BINARY_DEST = path.resolve(__dirname, 'wix-bin');
 var USER_NAME = os.userInfo().username;
 // can not execute under system user profile
