@@ -5,7 +5,6 @@
 
 const path = require('path');
 const wix = require('../index');
-const signing = require('./signing');
 
 async function pack({
   appPath,
@@ -26,12 +25,6 @@ async function pack({
   i18nCulture = 'en-us',
   suppressIces,
   extensions,
-  sign: {
-    certificateFile,
-    certificatePassword,
-    signingHashAlgorithm,
-    rfc3161TimeStampServer,
-  } = {},
   arch = 'x86',
   env = 'dev',
 } = {}) {
@@ -119,18 +112,6 @@ async function pack({
     ext: ['WixUIExtension', ...(extensions || [])], // extension assembly or "class, assembly"
     out: artifactFilePath, // specify output file (default: write to current directory)
   });
-
-  // sign
-  if (certificateFile) {
-    console.log('==================== sign ====================');
-    await signing.sign({
-      executable: artifactFilePath,
-      certificateFile,
-      certificatePassword,
-      signingHashAlgorithm,
-      rfc3161TimeStampServer,
-    });
-  }
 }
 
 module.exports = {
