@@ -112,6 +112,8 @@ async function pack({
     ext: ['WixUIExtension', ...(extensions || [])], // extension assembly or "class, assembly"
     out: artifactFilePath, // specify output file (default: write to current directory)
   });
+
+  return artifactFilePath;
 }
 
 module.exports = {
